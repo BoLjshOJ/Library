@@ -6,4 +6,5 @@ public interface EntityService {
     void all(String entity);
     void delete(String entity, Long id);
     void add(String entity);
+    void getBookByAuthorID(Long id);
 }

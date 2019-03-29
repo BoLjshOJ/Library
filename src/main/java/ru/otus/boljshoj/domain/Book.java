@@ -1,14 +1,15 @@
 package ru.otus.boljshoj.domain;
 
-import java.util.List;
-
 public class Book {
     private Long id;
+    private Author author;
+    private Genre genre;
     private String title;
-    private List<Author> authors;
 
-    public Book(Long id, String title) {
+    public Book(Long id, Author author, Genre genre, String title) {
         this.id = id;
+        this.author = author;
+        this.genre = genre;
         this.title = title;
     }
 
@@ -20,6 +21,22 @@ public class Book {
         this.id = id;
     }
 
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -28,19 +45,13 @@ public class Book {
         this.title = title;
     }
 
-    public List<Author> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(List<Author> authors) {
-        this.authors = authors;
-    }
-
     @Override
     public String toString() {
         return "Book {" +
                 "id= " + id +
-                ", title= '" + title + '\'' +
+                ", author= " + author +
+                ", genre= " + genre +
+                ", title='" + title + '\'' +
                 '}';
     }
 }
