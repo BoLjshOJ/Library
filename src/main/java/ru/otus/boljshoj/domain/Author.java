@@ -1,12 +1,9 @@
 package ru.otus.boljshoj.domain;
 
-import java.util.List;
-
 public class Author {
     private Long id;
     private String name;
     private String surname;
-    private List<Book> books;
 
     public Author(Long id, String name, String surname) {
         this.id = id;
@@ -36,14 +33,6 @@ public class Author {
 
     public void setSurname(String surname) {
         this.surname = surname;
-    }
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
-        this.books = books;
     }
 
     @Override

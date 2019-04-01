@@ -111,9 +111,13 @@ public class EntityServiceImpl implements EntityService{
                 break;
             case "book":
                 Long idOfNewBook = (long) bookDao.count() + 1;
+                ioService.printMessage("Input author id");
+                Author author = authorDao.getById(Long.parseLong(ioService.getStringFromUser()));
+                ioService.printMessage("Input genre id");
+                Genre genre = genreDao.getById(Long.parseLong(ioService.getStringFromUser()));
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewBook = ioService.getStringFromUser();
-                bookDao.insert(new Book(idOfNewBook, nameOfNewBook));
+                bookDao.insert(new Book(idOfNewBook, author, genre, nameOfNewBook));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "genre":
@@ -127,5 +131,9 @@ public class EntityServiceImpl implements EntityService{
                 ioService.printMessage("You must choose entity: author, book or genre");
         }
     }
-}
 
+    @Override
+    public void getBookByAuthorID(Long id) {
+        ioService.printMessage(bookDao.getByAuthorId(id).toString());
+    }
+}

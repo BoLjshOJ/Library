@@ -1,61 +1,75 @@
 package ru.otus.boljshoj.dao;
 
-import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.otus.boljshoj.domain.Author;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class AuthorDaoImpl implements AuthorDao {
-    private final JdbcOperations jdbc;
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private final NamedParameterJdbcOperations jdbc;
+
+    private static RowMapper<Author> authorRowMapper = ((resultSet, i) -> {
+        Author author = new Author(
+                resultSet.getLong("author_id"),
+                resultSet.getString("author_name"),
+                resultSet.getString("author_surname")
+        );
+        return author;
+    });
 
     public AuthorDaoImpl(NamedParameterJdbcOperations namedParameterJdbcOperations) {
-        this.jdbc = namedParameterJdbcOperations.getJdbcOperations();
-        this.namedParameterJdbcOperations =  namedParameterJdbcOperations;
+        this.jdbc = namedParameterJdbcOperations;
     }
 
     @Override
     public int count() {
-        return jdbc.queryForObject("select count(*) from authors", Integer.class);
+        return jdbc.queryForObject(
+                "select count(*) from authors",
+                Collections.emptyMap(),
+                Integer.class
+        );
     }
 
     @Override
     public void insert(Author author) {
-        jdbc.update("insert into authors (id, name, surname) values (?, ?, ?)", author.getId(), author.getName(), author.getSurname());
+        jdbc.update(
+                "insert into authors (author_id, author_name, author_surname) values (:id, :name, :surname)",
+                new MapSqlParameterSource()
+                    .addValue("id", author.getId())
+                    .addValue("name", author.getName())
+                    .addValue("surname", author.getSurname())
+        );
     }
 
     @Override
-    public Author getById(Long id){
-        Map<String, Object> params = Collections.singletonMap("id", id);
-        return namedParameterJdbcOperations.queryForObject("select * from authors where id = :id", params, new PersonMapper());
+    public Author getById(Long id) {
+        return jdbc.queryForObject(
+                "select * from authors where author_id = :id",
+                new MapSqlParameterSource()
+                    .addValue("id", id),
+                authorRowMapper
+        );
     }
 
     @Override
-    public List<Author> getAll(){
-        return jdbc.query("select * from authors", new PersonMapper());
+    public List<Author> getAll() {
+        return jdbc.query(
+                "select * from authors",
+                authorRowMapper
+        );
     }
 
     @Override
-    public void deleteById(Long id){
-        Map<String, Object> params = Collections.singletonMap("id", id);
-        namedParameterJdbcOperations.update("delete from authors where id = :id", params);
-    }
-
-    private static class PersonMapper implements RowMapper<Author> {
-        @Override
-        public Author mapRow(ResultSet resultSet, int i) throws SQLException {
-            Long id = resultSet.getLong("id");
-            String name = resultSet.getString("name");
-            String surname = resultSet.getString("surname");
-            return new Author(id, name, surname);
-        }
+    public void deleteById(Long id) {
+        jdbc.update(
+                "delete from authors where author_id = :id",
+                new MapSqlParameterSource()
+                    .addValue("id", id)
+        );
     }
 }

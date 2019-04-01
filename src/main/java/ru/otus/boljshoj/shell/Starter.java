@@ -29,6 +29,11 @@ public class Starter {
         entityService.all(entity);
     }
 
+    @ShellMethod("get all books by author ID")
+    public void getbyauthor(Long id){
+        entityService.getBookByAuthorID(id);
+    }
+
     @ShellMethod("delete entity by ID")
     public void delete(String entity, Long id){
         entityService.delete(entity, id);
