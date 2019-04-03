@@ -1,10 +1,10 @@
-package ru.otus.boljshoj.dao;
+package ru.otus.boljshoj.repos;
 
 import ru.otus.boljshoj.domain.Author;
 
 import java.util.List;
 
-public interface AuthorDao {
+public interface AuthorRepository {
     int count();
     void insert(Author author);
     Author getById(Long id);

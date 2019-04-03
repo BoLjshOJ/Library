@@ -43,4 +43,9 @@ public class Starter {
     public void add(String entity) {
         entityService.add(entity);
     }
+
+    @ShellMethod("get all comments by book ID")
+    public void getbybook(Long id){
+        entityService.getCommentsByBookID(id);
+    }
 }
