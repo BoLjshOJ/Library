@@ -126,30 +126,27 @@ public class EntityServiceImpl implements EntityService{
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "book":
-                Long idOfNewBook = (long) bookRepository.count() + 1;
                 ioService.printMessage("Input author id");
                 Author author = authorRepository.getById(Long.parseLong(ioService.getStringFromUser()));
                 ioService.printMessage("Input genre id");
                 Genre genre = genreRepository.getById(Long.parseLong(ioService.getStringFromUser()));
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewBook = ioService.getStringFromUser();
-                bookRepository.insert(new Book(idOfNewBook, author, genre, nameOfNewBook));
+                bookRepository.insert(new Book(author, genre, nameOfNewBook));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "genre":
-                Long idOfNewGenre = (long) genreRepository.count() + 1;
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewGenre = ioService.getStringFromUser();
-                genreRepository.insert(new Genre(idOfNewGenre, nameOfNewGenre));
+                genreRepository.insert(new Genre(nameOfNewGenre));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "comment":
-                Long idOfNewComment = (long) commentRepository.count() + 1;
                 ioService.printMessage("Input bookId for comment");
                 Book book = bookRepository.getById(Long.parseLong(ioService.getStringFromUser()));
                 ioService.printMessage("Input %s for book %s:", entity, book.getTitle());
                 String newComment = ioService.getStringFromUser();
-                commentRepository.insert(new Comment(idOfNewComment, book, newComment));
+                commentRepository.insert(new Comment(book, newComment));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             default:

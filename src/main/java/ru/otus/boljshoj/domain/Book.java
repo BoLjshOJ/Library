@@ -20,8 +20,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long id, Author author, Genre genre, String title) {
-        this.id = id;
+    public Book(Author author, Genre genre, String title) {
         this.author = author;
         this.genre = genre;
         this.title = title;

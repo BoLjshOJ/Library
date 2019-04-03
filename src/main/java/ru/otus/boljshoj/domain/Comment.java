@@ -17,8 +17,7 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(Long id, Book book, String text){
-        this.id = id;
+    public Comment(Book book, String text){
         this.book = book;
         this.text = text;
     }
@@ -29,6 +28,22 @@ public class Comment {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     @Override
