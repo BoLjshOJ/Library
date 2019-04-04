@@ -1,11 +1,20 @@
 package ru.otus.boljshoj.domain;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "genres")
 public class Genre {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
-    public Genre(Long id, String name) {
-        this.id = id;
+    public Genre() {
+    }
+
+    public Genre(String name) {
         this.name = name;
     }
 

@@ -1,10 +1,10 @@
-package ru.otus.boljshoj.dao;
+package ru.otus.boljshoj.repos;
 
 import ru.otus.boljshoj.domain.Book;
 
 import java.util.List;
 
-public interface BookDao {
+public interface BookRepository {
     int count();
     void insert(Book book);
     Book getById(Long id);

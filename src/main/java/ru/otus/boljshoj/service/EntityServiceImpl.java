@@ -2,25 +2,29 @@ package ru.otus.boljshoj.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.otus.boljshoj.dao.AuthorDao;
-import ru.otus.boljshoj.dao.BookDao;
-import ru.otus.boljshoj.dao.GenreDao;
 import ru.otus.boljshoj.domain.Author;
 import ru.otus.boljshoj.domain.Book;
+import ru.otus.boljshoj.domain.Comment;
 import ru.otus.boljshoj.domain.Genre;
+import ru.otus.boljshoj.repos.AuthorRepository;
+import ru.otus.boljshoj.repos.BookRepository;
+import ru.otus.boljshoj.repos.CommentRepository;
+import ru.otus.boljshoj.repos.GenreRepository;
 
 @Service
 public class EntityServiceImpl implements EntityService{
-    private AuthorDao authorDao;
-    private BookDao bookDao;
-    private GenreDao genreDao;
+    private AuthorRepository authorRepository;
+    private GenreRepository genreRepository;
+    private BookRepository bookRepository;
+    private CommentRepository commentRepository;
     private IOService ioService;
 
     @Autowired
-    public EntityServiceImpl(AuthorDao authorDao, BookDao bookDao, GenreDao genreDao, IOService ioService) {
-        this.authorDao = authorDao;
-        this.bookDao = bookDao;
-        this.genreDao = genreDao;
+    public EntityServiceImpl(AuthorRepository authorRepository, BookRepository bookRepository, GenreRepository genreRepository, CommentRepository commentRepository, IOService ioService) {
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.genreRepository = genreRepository;
+        this.commentRepository = commentRepository;
         this.ioService = ioService;
     }
 
@@ -28,16 +32,19 @@ public class EntityServiceImpl implements EntityService{
         String paramToPrinter = "Count of %s: %d";
         switch (entity) {
             case "authors":
-                ioService.printMessage(paramToPrinter, entity, authorDao.count());
+                ioService.printMessage(paramToPrinter, entity, authorRepository.count());
                 break;
             case "books":
-                ioService.printMessage(paramToPrinter, entity, bookDao.count());
+                ioService.printMessage(paramToPrinter, entity, bookRepository.count());
                 break;
             case "genres":
-                ioService.printMessage(paramToPrinter, entity, genreDao.count());
+                ioService.printMessage(paramToPrinter, entity, genreRepository.count());
+                break;
+            case "comments":
+                ioService.printMessage(paramToPrinter, entity, commentRepository.count());
                 break;
             default:
-                ioService.printMessage("You must choose entity: authors, books or genres");
+                ioService.printMessage("You must choose entity: authors, books, genres or comments");
         }
     }
 
@@ -45,16 +52,19 @@ public class EntityServiceImpl implements EntityService{
     public void get(String entity, Long id) {
         switch (entity) {
             case "author":
-                ioService.printMessage(authorDao.getById(id).toString());
+                ioService.printMessage(authorRepository.getById(id).toString());
                 break;
             case "book":
-                ioService.printMessage(bookDao.getById(id).toString());
+                ioService.printMessage(bookRepository.getById(id).toString());
                 break;
             case "genre":
-                ioService.printMessage(genreDao.getById(id).toString());
+                ioService.printMessage(genreRepository.getById(id).toString());
+                break;
+            case "comment":
+                ioService.printMessage(commentRepository.getById(id).toString());
                 break;
             default:
-                ioService.printMessage("You must choose entity: author, book or genre");
+                ioService.printMessage("You must choose entity: author, book, genre or comment");
         }
     }
 
@@ -62,16 +72,19 @@ public class EntityServiceImpl implements EntityService{
     public void all(String entity) {
         switch (entity) {
             case "authors":
-                ioService.printMessage(authorDao.getAll().toString());
+                ioService.printMessage(authorRepository.getAll().toString());
                 break;
             case "books":
-                ioService.printMessage(bookDao.getAll().toString());
+                ioService.printMessage(bookRepository.getAll().toString());
                 break;
             case "genres":
-                ioService.printMessage(genreDao.getAll().toString());
+                ioService.printMessage(genreRepository.getAll().toString());
+                break;
+            case "comments":
+                ioService.printMessage(commentRepository.getAll().toString());
                 break;
             default:
-                ioService.printMessage("You must choose entity: authors, books or genres");
+                ioService.printMessage("You must choose entity: authors, books, genres or comments");
         }
     }
 
@@ -80,19 +93,23 @@ public class EntityServiceImpl implements EntityService{
         String paramToPrinter = "%s with id %d was succesfully deleted";
         switch (entity) {
             case "author":
-                authorDao.deleteById(id);
+                authorRepository.deleteById(id);
                 ioService.printMessage(paramToPrinter, entity, id);
                 break;
             case "book":
-                bookDao.deleteById(id);
+                bookRepository.deleteById(id);
                 ioService.printMessage(paramToPrinter, entity, id);
                 break;
             case "genre":
-                genreDao.deleteById(id);
+                genreRepository.deleteById(id);
+                ioService.printMessage(paramToPrinter, entity, id);
+                break;
+            case "comment":
+                commentRepository.deleteById(id);
                 ioService.printMessage(paramToPrinter, entity, id);
                 break;
             default:
-                ioService.printMessage("You must choose entity: author, book or genre");
+                ioService.printMessage("You must choose entity: author, book, genre or comment");
         }
     }
 
@@ -101,39 +118,49 @@ public class EntityServiceImpl implements EntityService{
         String paramToPrinter = "%s was succesfully added";
         switch (entity) {
             case "author":
-                Long idOfNewAuthor = (long) authorDao.count() + 1;
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewAuthor = ioService.getStringFromUser();
                 ioService.printMessage("Input %s surname", entity);
                 String surnameOfNewAuthor = ioService.getStringFromUser();
-                authorDao.insert(new Author(idOfNewAuthor, nameOfNewAuthor, surnameOfNewAuthor));
+                authorRepository.insert(new Author(nameOfNewAuthor, surnameOfNewAuthor));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "book":
-                Long idOfNewBook = (long) bookDao.count() + 1;
                 ioService.printMessage("Input author id");
-                Author author = authorDao.getById(Long.parseLong(ioService.getStringFromUser()));
+                Author author = authorRepository.getById(Long.parseLong(ioService.getStringFromUser()));
                 ioService.printMessage("Input genre id");
-                Genre genre = genreDao.getById(Long.parseLong(ioService.getStringFromUser()));
+                Genre genre = genreRepository.getById(Long.parseLong(ioService.getStringFromUser()));
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewBook = ioService.getStringFromUser();
-                bookDao.insert(new Book(idOfNewBook, author, genre, nameOfNewBook));
+                bookRepository.insert(new Book(author, genre, nameOfNewBook));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "genre":
-                Long idOfNewGenre = (long) genreDao.count() + 1;
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewGenre = ioService.getStringFromUser();
-                genreDao.insert(new Genre(idOfNewGenre, nameOfNewGenre));
+                genreRepository.insert(new Genre(nameOfNewGenre));
+                ioService.printMessage(paramToPrinter, entity);
+                break;
+            case "comment":
+                ioService.printMessage("Input bookId for comment");
+                Book book = bookRepository.getById(Long.parseLong(ioService.getStringFromUser()));
+                ioService.printMessage("Input %s for book %s:", entity, book.getTitle());
+                String newComment = ioService.getStringFromUser();
+                commentRepository.insert(new Comment(book, newComment));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             default:
-                ioService.printMessage("You must choose entity: author, book or genre");
+                ioService.printMessage("You must choose entity: author, book, genre or comment");
         }
     }
 
     @Override
     public void getBookByAuthorID(Long id) {
-        ioService.printMessage(bookDao.getByAuthorId(id).toString());
+        ioService.printMessage(bookRepository.getByAuthorId(id).toString());
+    }
+
+    @Override
+    public void getCommentsByBookID(Long id) {
+        ioService.printMessage(commentRepository.getByBookId(id).toString());
     }
 }

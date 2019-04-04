@@ -1,13 +1,26 @@
 package ru.otus.boljshoj.domain;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "books")
 public class Book {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
     private Author author;
+    @ManyToOne
     private Genre genre;
+
     private String title;
 
-    public Book(Long id, Author author, Genre genre, String title) {
-        this.id = id;
+    public Book() {
+    }
+
+    public Book(Author author, Genre genre, String title) {
         this.author = author;
         this.genre = genre;
         this.title = title;

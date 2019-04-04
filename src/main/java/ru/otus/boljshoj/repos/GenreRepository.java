@@ -1,10 +1,10 @@
-package ru.otus.boljshoj.dao;
+package ru.otus.boljshoj.repos;
 
 import ru.otus.boljshoj.domain.Genre;
 
 import java.util.List;
 
-public interface GenreDao {
+public interface GenreRepository {
     int count();
     void insert(Genre genre);
     Genre getById(Long id);

@@ -16,7 +16,7 @@ public class BookDaoImpl implements BookDao {
     private final NamedParameterJdbcOperations jdbc;
 
     private final String SELECT_ALL =
-            "select b.book_id, a.author_id, a.author_name, a.author_surname, g.genre_id, g.genre_name, b.book_title from books b inner join authors a on a.author_id = b.author_id inner join genres g on g.genre_id = b.genre_id";
+            "select b.book_id, a.author_id, a.author_name, a.author_surname, g.genre_id, g.genre_name, b.book_title from authors a, books b, genres g where a.author_id = b.author_id and g.genre_id = b.genre_id";
 
     private static RowMapper<Book> bookRowMapper = (resultSet, i) -> {
         long id = resultSet.getLong("book_id");
