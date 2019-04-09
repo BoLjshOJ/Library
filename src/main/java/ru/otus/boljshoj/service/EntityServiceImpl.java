@@ -52,16 +52,16 @@ public class EntityServiceImpl implements EntityService{
     public void get(String entity, Long id) {
         switch (entity) {
             case "author":
-                ioService.printMessage(authorRepository.getById(id).toString());
+                ioService.printMessage(authorRepository.findById(id).get().toString());
                 break;
             case "book":
-                ioService.printMessage(bookRepository.getById(id).toString());
+                ioService.printMessage(bookRepository.findById(id).get().toString());
                 break;
             case "genre":
-                ioService.printMessage(genreRepository.getById(id).toString());
+                ioService.printMessage(genreRepository.findById(id).get().toString());
                 break;
             case "comment":
-                ioService.printMessage(commentRepository.getById(id).toString());
+                ioService.printMessage(commentRepository.findById(id).get().toString());
                 break;
             default:
                 ioService.printMessage("You must choose entity: author, book, genre or comment");
@@ -72,16 +72,16 @@ public class EntityServiceImpl implements EntityService{
     public void all(String entity) {
         switch (entity) {
             case "authors":
-                ioService.printMessage(authorRepository.getAll().toString());
+                ioService.printMessage(authorRepository.findAll().toString());
                 break;
             case "books":
-                ioService.printMessage(bookRepository.getAll().toString());
+                ioService.printMessage(bookRepository.findAll().toString());
                 break;
             case "genres":
-                ioService.printMessage(genreRepository.getAll().toString());
+                ioService.printMessage(genreRepository.findAll().toString());
                 break;
             case "comments":
-                ioService.printMessage(commentRepository.getAll().toString());
+                ioService.printMessage(commentRepository.findAll().toString());
                 break;
             default:
                 ioService.printMessage("You must choose entity: authors, books, genres or comments");
@@ -122,31 +122,31 @@ public class EntityServiceImpl implements EntityService{
                 String nameOfNewAuthor = ioService.getStringFromUser();
                 ioService.printMessage("Input %s surname", entity);
                 String surnameOfNewAuthor = ioService.getStringFromUser();
-                authorRepository.insert(new Author(nameOfNewAuthor, surnameOfNewAuthor));
+                authorRepository.save(new Author(nameOfNewAuthor, surnameOfNewAuthor));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "book":
                 ioService.printMessage("Input author id");
-                Author author = authorRepository.getById(Long.parseLong(ioService.getStringFromUser()));
+                Author author = authorRepository.findById(Long.parseLong(ioService.getStringFromUser())).get();
                 ioService.printMessage("Input genre id");
-                Genre genre = genreRepository.getById(Long.parseLong(ioService.getStringFromUser()));
+                Genre genre = genreRepository.findById(Long.parseLong(ioService.getStringFromUser())).get();
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewBook = ioService.getStringFromUser();
-                bookRepository.insert(new Book(author, genre, nameOfNewBook));
+                bookRepository.save(new Book(author, genre, nameOfNewBook));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "genre":
                 ioService.printMessage("Input %s name", entity);
                 String nameOfNewGenre = ioService.getStringFromUser();
-                genreRepository.insert(new Genre(nameOfNewGenre));
+                genreRepository.save(new Genre(nameOfNewGenre));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             case "comment":
                 ioService.printMessage("Input bookId for comment");
-                Book book = bookRepository.getById(Long.parseLong(ioService.getStringFromUser()));
+                Book book = bookRepository.findById(Long.parseLong(ioService.getStringFromUser())).get();
                 ioService.printMessage("Input %s for book %s:", entity, book.getTitle());
                 String newComment = ioService.getStringFromUser();
-                commentRepository.insert(new Comment(book, newComment));
+                commentRepository.save(new Comment(book, newComment));
                 ioService.printMessage(paramToPrinter, entity);
                 break;
             default:
@@ -156,11 +156,11 @@ public class EntityServiceImpl implements EntityService{
 
     @Override
     public void getBookByAuthorID(Long id) {
-        ioService.printMessage(bookRepository.getByAuthorId(id).toString());
+        ioService.printMessage(bookRepository.findBooksByAuthorId(id).toString());
     }
 
     @Override
     public void getCommentsByBookID(Long id) {
-        ioService.printMessage(commentRepository.getByBookId(id).toString());
+        ioService.printMessage(commentRepository.findCommentsByBookId(id).toString());
     }
 }
