@@ -1,10 +1,10 @@
 package ru.otus.boljshoj.repos;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.boljshoj.domain.Author;
 
@@ -19,12 +19,14 @@ class AuthorRepositoryJpaTest {
     private AuthorRepository authorRepository;
 
     @Test
-    void testCount() {
+    @DisplayName("должен возвращать корректное кол-во авторов в БД")
+    public void shouldReturnCorrectAuthorsCount() {
         assertThat(authorRepository.findAll().size()).isEqualTo(4);
     }
 
     @Test
-    void testInsert() {
+    @DisplayName("должен корректно сохранять автора")
+    public void shouldCorrectSaveAuthor() {
         Author newAuthor = new Author("newAuthorName", "newAuthorSurname");
         authorRepository.save(newAuthor);
         Author find = authorRepository.findById(newAuthor.getId()).get();
@@ -33,14 +35,16 @@ class AuthorRepositoryJpaTest {
     }
 
     @Test
-    void testGetById() {
+    @DisplayName("должен получать корректного автора по ID")
+    public void shouldGetCorrectAuthorById() {
         assertThat(authorRepository.findById(1L).get())
                 .hasFieldOrPropertyWithValue("name", "authorName1")
                 .hasFieldOrPropertyWithValue("surname", "authorSurname1");
     }
 
     @Test
-    void testGetAll() {
+    @DisplayName("должен возвращать всех авторов из БД")
+    public void shouldReturnAllAuthors() {
         assertThat(authorRepository.findAll())
                 .extracting("id", "name", "surname")
                 .contains(tuple(1L, "authorName1", "authorSurname1"),
@@ -50,7 +54,8 @@ class AuthorRepositoryJpaTest {
     }
 
     @Test
-    void testDeleteById() {
+    @DisplayName("должен удалять автора из БД по ID")
+    public void shouldDeleteAuthorById() {
         Author authorForDelete = authorRepository.findById(4L).get();
         authorRepository.deleteById(4L);
         assertThat(authorRepository.findAll().size()).isEqualTo(3);

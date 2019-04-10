@@ -1,10 +1,10 @@
 package ru.otus.boljshoj.repos;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.boljshoj.domain.Genre;
 
@@ -19,12 +19,14 @@ class GenreRepositoryJpaTest {
     private GenreRepository genreRepository;
 
     @Test
-    void testCount() {
+    @DisplayName("должен возвращать корректное кол-во жанров в БД")
+    public void shouldReturnCorrectGenresCount() {
         assertThat(genreRepository.findAll().size()).isEqualTo(4);
     }
 
     @Test
-    void testInsert() {
+    @DisplayName("должен корректно сохранять жанр в БД")
+    public void shouldCorrectSaveGenre() {
         Genre newGenre = new Genre("newGenre");
         genreRepository.save(newGenre);
         Genre find = genreRepository.findById(newGenre.getId()).get();
@@ -32,13 +34,15 @@ class GenreRepositoryJpaTest {
     }
 
     @Test
-    void testGetById() {
+    @DisplayName("должен получать корректный жанр по ID")
+    public void shouldGetCorrectGenreById() {
         assertThat(genreRepository.findById(3L).get())
                 .hasFieldOrPropertyWithValue("name", "genre3");
     }
 
     @Test
-    void testGetAll() {
+    @DisplayName("должен возвращать все жанры из БД")
+    public void shouldReturnAllGenres() {
         assertThat(genreRepository.findAll())
                 .extracting("id", "name")
                 .contains(tuple(1L, "genre1"),
@@ -48,7 +52,8 @@ class GenreRepositoryJpaTest {
     }
 
     @Test
-    void testDeleteById() {
+    @DisplayName("должен удалять жанр из БД по ID")
+    public void shouldDeleteGenreById() {
         Genre genreForDelete = genreRepository.findById(4L).get();
         genreRepository.deleteById(4L);
         assertThat(genreRepository.findAll().size()).isEqualTo(3);
