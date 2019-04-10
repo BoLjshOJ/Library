@@ -1,13 +1,7 @@
 package ru.otus.boljshoj.repos;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.otus.boljshoj.domain.Genre;
 
-import java.util.List;
-
-public interface GenreRepository {
-    int count();
-    void insert(Genre genre);
-    Genre getById(Long id);
-    List<Genre> getAll();
-    void deleteById(Long id);
+public interface GenreRepository extends JpaRepository<Genre, Long> {
 }

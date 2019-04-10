@@ -1,10 +1,10 @@
 package ru.otus.boljshoj.repos;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.boljshoj.domain.Book;
 
@@ -12,7 +12,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 @DataJpaTest
 @RunWith(SpringRunner.class)
-@Import({BookRepositoryJpa.class, AuthorRepositoryJpa.class, GenreRepositoryJpa.class})
 class BookRepositoryJpaTest {
 
     @Autowired
@@ -23,45 +22,46 @@ class BookRepositoryJpaTest {
     private GenreRepository genreRepository;
 
     @Test
-    void testCount() {
-        assertThat(bookRepository.getAll().size()).isEqualTo(5);
+    @DisplayName("должен возвращать корректное количество книг в БД")
+    void shouldReturnCorrectBooksCount() {
+        assertThat(bookRepository.findAll().size()).isEqualTo(5);
     }
 
     @Test
-    void testInsert() {
-        Book newBook = new Book(authorRepository.getById(1L), genreRepository.getById(1L), "newBook");
-        bookRepository.insert(newBook);
-        Book find = bookRepository.getById(6L);
+    @DisplayName("должен корректно сохранять книгу в БД")
+    void shouldCorrectSaveBook() {
+        Book newBook = new Book(authorRepository.findById(1L).get(), genreRepository.findById(1L).get(), "newBook");
+        bookRepository.save(newBook);
+        Book find = bookRepository.findById(6L).get();
         assertThat(find.getTitle()).isEqualTo(newBook.getTitle());
     }
 
     @Test
-    void testGetById() {
-        assertThat(bookRepository.getById(3L))
+    @DisplayName("должен получать корректную книгу по ID")
+    void shouldReturnBookById() {
+        assertThat(bookRepository.findById(3L).get())
                 .hasFieldOrPropertyWithValue("title", "book3");
     }
 
     @Test
-    void testGetAll() {
-        assertThat(bookRepository.getAll().size()).isEqualTo(5);
-        Book one = bookRepository.getById(1L);
-        Book two = bookRepository.getById(2L);
-        Book three = bookRepository.getById(3L);
-        Book four = bookRepository.getById(4L);
-        Book five = bookRepository.getById(5L);
-        assertThat(bookRepository.getAll()).contains(one, two, three, four, five);
+    @DisplayName("должен возвращать все книги из БД")
+    void shouldReturnAllBooks() {
+        assertThat(bookRepository.findAll().size()).isEqualTo(5);
+        assertThat(bookRepository.findAll()).extracting("title").contains("book1", "book2", "book3", "book4", "book5");
     }
 
     @Test
-    void testDeleteById() {
-        Book bookForDelete = bookRepository.getById(5L);
+    @DisplayName("должен удалять книгу из БД по ID")
+    void shouldDeleteBookById() {
+        Book bookForDelete = bookRepository.findById(5L).get();
         bookRepository.deleteById(5L);
-        assertThat(bookRepository.getAll().size()).isEqualTo(4);
-        assertThat(bookRepository.getAll()).doesNotContain(bookForDelete);
+        assertThat(bookRepository.findAll().size()).isEqualTo(4);
+        assertThat(bookRepository.findAll()).doesNotContain(bookForDelete);
     }
 
     @Test
-    void testGetByAuthorId() {
-        assertThat(bookRepository.getByAuthorId(1L)).contains(bookRepository.getById(1L), bookRepository.getById(2L));
+    @DisplayName("должен возвращать все книги автора по его ID")
+    void shouldReturnCorrectBooksByAuthorId() {
+        assertThat(bookRepository.findBooksByAuthorId(1L)).contains(bookRepository.findById(1L).get(), bookRepository.findById(2L).get());
     }
 }
