@@ -6,25 +6,18 @@ import ru.otus.boljshoj.domain.Author;
 import ru.otus.boljshoj.domain.Book;
 import ru.otus.boljshoj.domain.Comment;
 import ru.otus.boljshoj.domain.Genre;
-import ru.otus.boljshoj.repos.AuthorRepository;
 import ru.otus.boljshoj.repos.BookRepository;
-import ru.otus.boljshoj.repos.CommentRepository;
-import ru.otus.boljshoj.repos.GenreRepository;
+
+import java.util.ArrayList;
 
 @Service
 public class EntityServiceImpl implements EntityService{
-    private AuthorRepository authorRepository;
-    private GenreRepository genreRepository;
     private BookRepository bookRepository;
-    private CommentRepository commentRepository;
     private IOService ioService;
 
     @Autowired
-    public EntityServiceImpl(AuthorRepository authorRepository, BookRepository bookRepository, GenreRepository genreRepository, CommentRepository commentRepository, IOService ioService) {
-        this.authorRepository = authorRepository;
+    public EntityServiceImpl(BookRepository bookRepository, IOService ioService) {
         this.bookRepository = bookRepository;
-        this.genreRepository = genreRepository;
-        this.commentRepository = commentRepository;
         this.ioService = ioService;
     }
 
@@ -32,39 +25,19 @@ public class EntityServiceImpl implements EntityService{
         String paramToPrinter = "Count of %s: %d";
         switch (entity) {
             case "authors":
-                ioService.printMessage(paramToPrinter, entity, authorRepository.count());
+                ioService.printMessage(paramToPrinter, entity, bookRepository.findAllAuthors().size());
                 break;
             case "books":
-                ioService.printMessage(paramToPrinter, entity, bookRepository.count());
+                ioService.printMessage(paramToPrinter, entity, bookRepository.findAll().size());
                 break;
             case "genres":
-                ioService.printMessage(paramToPrinter, entity, genreRepository.count());
+                ioService.printMessage(paramToPrinter, entity, bookRepository.findAllGenres().size());
                 break;
             case "comments":
-                ioService.printMessage(paramToPrinter, entity, commentRepository.count());
+                ioService.printMessage(paramToPrinter, entity, bookRepository.findAllComments().size());
                 break;
             default:
                 ioService.printMessage("You must choose entity: authors, books, genres or comments");
-        }
-    }
-
-    @Override
-    public void get(String entity, Long id) {
-        switch (entity) {
-            case "author":
-                ioService.printMessage(authorRepository.findById(id).get().toString());
-                break;
-            case "book":
-                ioService.printMessage(bookRepository.findById(id).get().toString());
-                break;
-            case "genre":
-                ioService.printMessage(genreRepository.findById(id).get().toString());
-                break;
-            case "comment":
-                ioService.printMessage(commentRepository.findById(id).get().toString());
-                break;
-            default:
-                ioService.printMessage("You must choose entity: author, book, genre or comment");
         }
     }
 
@@ -72,16 +45,16 @@ public class EntityServiceImpl implements EntityService{
     public void all(String entity) {
         switch (entity) {
             case "authors":
-                ioService.printMessage(authorRepository.findAll().toString());
+                ioService.printMessage(bookRepository.findAllAuthors().toString());
                 break;
             case "books":
                 ioService.printMessage(bookRepository.findAll().toString());
                 break;
             case "genres":
-                ioService.printMessage(genreRepository.findAll().toString());
+                ioService.printMessage(bookRepository.findAllGenres().toString());
                 break;
             case "comments":
-                ioService.printMessage(commentRepository.findAll().toString());
+                ioService.printMessage(bookRepository.findAllComments().toString());
                 break;
             default:
                 ioService.printMessage("You must choose entity: authors, books, genres or comments");
@@ -89,78 +62,82 @@ public class EntityServiceImpl implements EntityService{
     }
 
     @Override
-    public void delete(String entity, Long id) {
-        String paramToPrinter = "%s with id %d was succesfully deleted";
-        switch (entity) {
-            case "author":
-                authorRepository.deleteById(id);
-                ioService.printMessage(paramToPrinter, entity, id);
-                break;
-            case "book":
-                bookRepository.deleteById(id);
-                ioService.printMessage(paramToPrinter, entity, id);
-                break;
-            case "genre":
-                genreRepository.deleteById(id);
-                ioService.printMessage(paramToPrinter, entity, id);
-                break;
-            case "comment":
-                commentRepository.deleteById(id);
-                ioService.printMessage(paramToPrinter, entity, id);
-                break;
-            default:
-                ioService.printMessage("You must choose entity: author, book, genre or comment");
-        }
-    }
-
-    @Override
     public void add(String entity) {
-        String paramToPrinter = "%s was succesfully added";
         switch (entity) {
-            case "author":
-                ioService.printMessage("Input %s name", entity);
-                String nameOfNewAuthor = ioService.getStringFromUser();
-                ioService.printMessage("Input %s surname", entity);
-                String surnameOfNewAuthor = ioService.getStringFromUser();
-                authorRepository.save(new Author(nameOfNewAuthor, surnameOfNewAuthor));
-                ioService.printMessage(paramToPrinter, entity);
-                break;
             case "book":
-                ioService.printMessage("Input author id");
-                Author author = authorRepository.findById(Long.parseLong(ioService.getStringFromUser())).get();
-                ioService.printMessage("Input genre id");
-                Genre genre = genreRepository.findById(Long.parseLong(ioService.getStringFromUser())).get();
-                ioService.printMessage("Input %s name", entity);
-                String nameOfNewBook = ioService.getStringFromUser();
-                bookRepository.save(new Book(author, genre, nameOfNewBook));
-                ioService.printMessage(paramToPrinter, entity);
-                break;
-            case "genre":
-                ioService.printMessage("Input %s name", entity);
-                String nameOfNewGenre = ioService.getStringFromUser();
-                genreRepository.save(new Genre(nameOfNewGenre));
-                ioService.printMessage(paramToPrinter, entity);
+                ioService.printMessage("Input title of book");
+                String titleBook = ioService.getStringFromUser();
+                ioService.printMessage("Input author name");
+                String authorName = ioService.getStringFromUser();
+                ioService.printMessage("Input author surname");
+                String authorSurname = ioService.getStringFromUser();
+                ioService.printMessage("Input genre of book");
+                String genreName = ioService.getStringFromUser();
+                Book newBook = new Book(titleBook, new Author(authorName, authorSurname), new Genre(genreName), new ArrayList<>());
+                bookRepository.save(newBook);
+                ioService.printMessage("Book \"%s\" was successfully added", newBook.getTitle());
                 break;
             case "comment":
-                ioService.printMessage("Input bookId for comment");
-                Book book = bookRepository.findById(Long.parseLong(ioService.getStringFromUser())).get();
-                ioService.printMessage("Input %s for book %s:", entity, book.getTitle());
-                String newComment = ioService.getStringFromUser();
-                commentRepository.save(new Comment(book, newComment));
-                ioService.printMessage(paramToPrinter, entity);
+                ioService.printMessage("Input book ID");
+                String bookID = ioService.getStringFromUser();
+                ioService.printMessage("Input comment for book \"%s\"", bookRepository.findById(bookID).get().getTitle());
+                String textOfNewComment = ioService.getStringFromUser();
+                bookRepository.addCommentByBookId(bookID, new Comment(textOfNewComment));
+                ioService.printMessage("comment was added");
                 break;
             default:
-                ioService.printMessage("You must choose entity: author, book, genre or comment");
+                ioService.printMessage("You must choose entity: book or comment");
+        }
+
+    }
+
+    @Override
+    public void del(String param) {
+        switch (param) {
+            case "bookById":
+                ioService.printMessage("Input book ID for delete");
+                bookRepository.deleteById(ioService.getStringFromUser());
+                ioService.printMessage("delete was success");
+                break;
+            case "booksByAuthor":
+                ioService.printMessage("Input author name");
+                String authorName = ioService.getStringFromUser();
+                ioService.printMessage("Input author surname");
+                String authorSurname = ioService.getStringFromUser();
+                bookRepository.removeByAuthorNameAndAuthorSurname(authorName, authorSurname);
+                ioService.printMessage("delete was success");
+                break;
+            case "commentsByBookId":
+                ioService.printMessage("Input book ID for delete comments");
+                bookRepository.deleteCommentsByBookId(ioService.getStringFromUser());
+                ioService.printMessage("comments was delete");
+                break;
+            case "booksByGenreName":
+                ioService.printMessage("Input genre name for delete books");
+                bookRepository.removeByGenreName(ioService.getStringFromUser());
+                ioService.printMessage("delete was success");
+                break;
+            default:
+                ioService.printMessage("Please choose param");
         }
     }
 
     @Override
-    public void getBookByAuthorID(Long id) {
-        ioService.printMessage(bookRepository.findBooksByAuthorId(id).toString());
-    }
-
-    @Override
-    public void getCommentsByBookID(Long id) {
-        ioService.printMessage(commentRepository.findCommentsByBookId(id).toString());
+    public void find(String param) {
+        switch (param) {
+            case "booksByAuthor":
+                ioService.printMessage("Input author name");
+                String authorName = ioService.getStringFromUser();
+                ioService.printMessage("Input author surname");
+                String authorSurname = ioService.getStringFromUser();
+                ioService.printMessage(bookRepository.findByAuthorNameAndAuthorSurname(authorName, authorSurname).toString());
+                break;
+            case "booksByGenre":
+                ioService.printMessage("Input genre");
+                ioService.printMessage(bookRepository.findByGenreName(ioService.getStringFromUser()).toString());
+                break;
+            default:
+                ioService.printMessage("Please choose param");
+        }
     }
 }

@@ -1,29 +1,14 @@
 package ru.otus.boljshoj.domain;
 
-import javax.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "genres")
+@Document
 public class Genre {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private String name;
-
-    public Genre() {
-    }
 
     public Genre(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -36,9 +21,6 @@ public class Genre {
 
     @Override
     public String toString() {
-        return "Genre {" +
-                "id= " + id +
-                ", name= '" + name + '\'' +
-                '}';
+        return "Жанр: " + name;
     }
 }
