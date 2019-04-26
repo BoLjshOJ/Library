@@ -1,8 +1,5 @@
 package ru.otus.boljshoj.domain;
 
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document
 public class Comment {
 
     private String text;
