@@ -1,36 +1,32 @@
 package ru.otus.boljshoj.domain;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "books")
+import java.util.List;
+
+@Document(collection = "books")
 public class Book {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    private Author author;
-    @ManyToOne
-    private Genre genre;
-
+    private String id;
     private String title;
+    private Author author;
+    private Genre genre;
+    private List<Comment> comments;
 
-    public Book() {
-    }
-
-    public Book(Author author, Genre genre, String title) {
+    public Book(String title, Author author, Genre genre, List<Comment> comments) {
+        this.title = title;
         this.author = author;
         this.genre = genre;
-        this.title = title;
+        this.comments = comments;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -58,13 +54,16 @@ public class Book {
         this.title = title;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
     @Override
     public String toString() {
-        return "Book {" +
-                "id= " + id +
-                ", author= " + author +
-                ", genre= " + genre +
-                ", title='" + title + '\'' +
-                '}';
+        return "Книга: " + title + " " + author + " " + genre + " Комментарии: " + comments;
     }
 }

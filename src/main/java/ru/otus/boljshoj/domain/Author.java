@@ -1,32 +1,13 @@
 package ru.otus.boljshoj.domain;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "authors")
 public class Author {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     private String name;
     private String surname;
 
-    public Author() {
-    }
-
     public Author(String name, String surname) {
         this.name = name;
         this.surname = surname;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -47,10 +28,6 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author {" +
-                "id= " + id +
-                ", name= '" + name + '\'' +
-                ", surname= '" + surname + '\'' +
-                '}';
+        return "Автор: " + name + " " + surname;
     }
 }
