@@ -37,7 +37,6 @@ class BookCustomRepositoryTest {
     @DisplayName("находит всех авторов")
     void findAllAuthors() {
         assertThat(bookRepository.findAllAuthors())
-                .hasSize(2)
                 .extracting("name", "surname")
                 .contains(tuple("Name1", "Surname1"),
                         tuple("Name2", "Surname2"));
@@ -47,7 +46,6 @@ class BookCustomRepositoryTest {
     @DisplayName("находит все жанры")
     void findAllGenres() {
         assertThat(bookRepository.findAllGenres())
-                .hasSize(2)
                 .extracting("name")
                 .contains("Genre1", "Genre2");
     }
